@@ -7,6 +7,7 @@ namespace NZWalsk.Api.Controllers
     [ApiController]
     public class StudentsController : ControllerBase
     {
+        [HttpGet]
         public IActionResult GetAllStudents()
         {
             string[] studentNames = new string[] { "simon", "James", "Bernard", "Brian" };
