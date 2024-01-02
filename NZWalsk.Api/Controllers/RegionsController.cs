@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NZWalsk.Api.Data;
 using NZWalsk.Api.Models.Domain;
 
 namespace NZWalsk.Api.Controllers
@@ -8,27 +9,34 @@ namespace NZWalsk.Api.Controllers
     [ApiController]
     public class RegionsController : ControllerBase
     {
+        //we need a constructor here
+        private readonly NZWalksDbContext dbContext;
+        public RegionsController(NZWalksDbContext dbContext)
+        {
+            this.dbContext = dbContext;
+        }
+        //Get all Regions
         [HttpGet]
         public IActionResult GetAll()
         {
-            var regions = new List<Region>
-            {
-                new Region
-                {
-                    Id= Guid.NewGuid(),
-                    Name= "Nairobi",
-                    Code="NBI",
-                    RegionImageUrl="https://images.unsplash.com/photo-1611144727915-ef30a08aaeb3?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bmFpcm9iaSUyMGNpdHl8ZW58MHx8MHx8fDA%3D"
-                },
-                new Region
-                {
-                    Id= Guid.NewGuid(),
-                    Name= "Mombasa",
-                    Code="MBSA",
-                    RegionImageUrl="https://images.unsplash.com/photo-1611144727915-ef30a08aaeb3?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bmFpcm9iaSUyMGNpdHl8ZW58MHx8MHx8fDA%3D"
-                }
-            };
+            var regions = dbContext.Regions.ToList();
+
             return Ok(regions);
+        }
+
+        //Get Single Region
+        [HttpGet]
+        [Route("{id:Guid}")]
+        public IActionResult GetById([FromRoute] Guid id)
+        {
+           // var region = dbContext.Regions.Find(id);
+           var region = dbContext.Regions.FirstOrDefault(r => r.Id == id);
+
+            if (region == null)
+            {
+                return NotFound();
+            }
+            return Ok(region);
         }
     }
 }
