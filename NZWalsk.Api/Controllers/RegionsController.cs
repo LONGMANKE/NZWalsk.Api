@@ -114,7 +114,21 @@ namespace NZWalsk.Api.Controllers
             
         }
 
-       
+        [HttpDelete]
+        [Route("{id:guid}")]
+
+        public async Task<IActionResult> DeleteRegion([FromRoute] Guid id)
+        {
+            var region = await dbContext.Regions.FindAsync(id);
+
+            if (region != null)
+            {
+                dbContext.Regions.Remove(region);
+                await dbContext.SaveChangesAsync();
+                return Ok(region);
+            }
+            return NotFound();
+        }
 
 
     }
