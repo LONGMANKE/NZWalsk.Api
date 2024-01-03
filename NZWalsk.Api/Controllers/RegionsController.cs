@@ -90,9 +90,32 @@ namespace NZWalsk.Api.Controllers
                 RegionImageUrl = regionDomainModel.RegionImageUrl,
                 Code = regionDomainModel.Code,
             };
-
+             
             return CreatedAtAction(nameof(GetById), new { id = regionDomainModel.Id }, regionDto);
 
         }
+        //Edit
+        [HttpPut]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> UpdateRegions([FromRoute] Guid id, UpdateRegionRequestDto updateRegionRequestDto)
+        {
+           var region= await dbContext.Regions.FindAsync(id);
+
+            if (region != null)
+            {
+                region.Code = updateRegionRequestDto.Code;
+                region.Name = updateRegionRequestDto.Name;
+                region.RegionImageUrl = updateRegionRequestDto.RegionImageUrl;
+                await dbContext.SaveChangesAsync();
+                return Ok(region);
+            }
+            
+                return NotFound();
+            
+        }
+
+       
+
+
     }
 }
